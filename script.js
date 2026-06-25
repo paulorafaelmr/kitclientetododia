@@ -1,45 +1,22 @@
-// Troque o link abaixo pelo checkout real da Kiwify, Hotmart ou plataforma escolhida.
 const CHECKOUT_URL = "https://pay.kiwify.com.br/38u72ot";
 
 const checkoutLinks = document.querySelectorAll(".checkout-link");
 
 checkoutLinks.forEach((link) => {
-  link.addEventListener("click", (event) => {
-    const isPlaceholder = CHECKOUT_URL.includes("seu-checkout-aqui.com");
+  link.href = CHECKOUT_URL;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
 
-    if (isPlaceholder) {
-      event.preventDefault();
-      const checkoutSection = document.querySelector("#checkout");
-
-      if (checkoutSection) {
-        checkoutSection.scrollIntoView({ behavior: "smooth", block: "center" });
-        checkoutSection.classList.add("attention");
-        setTimeout(() => checkoutSection.classList.remove("attention"), 700);
-      }
-
-      console.warn("Substitua CHECKOUT_URL no arquivo script.js pelo link real do checkout.");
-      return;
+  link.addEventListener("click", () => {
+    if (typeof fbq === "function") {
+      fbq("track", "InitiateCheckout", {
+        content_name: "Kit Cliente Todo Dia",
+        value: 37.00,
+        currency: "BRL"
+      });
     }
-
-    link.href = CHECKOUT_URL;
   });
 });
-
-const style = document.createElement("style");
-style.innerHTML = `
-  .attention {
-    animation: checkoutShake 0.7s ease;
-  }
-
-  @keyframes checkoutShake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-5px); }
-    80% { transform: translateX(5px); }
-  }
-`;
-document.head.appendChild(style);
 
 const countdownElement = document.getElementById("countdown");
 
